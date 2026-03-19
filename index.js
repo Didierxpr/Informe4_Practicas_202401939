@@ -31,7 +31,41 @@ app.get('/', (req, res) => {
     res.send('¡Servidor funcionando correctamente!');
 });
 
+// Ruta para registrar un estudiante
+app.post('/register', (req, res) => {
+    const { nombre, carnet, correo } = req.body;
 
+    // Validación de los datos
+    if (!nombre || !carnet || !correo) {
+        return res.status(400).json({ message: 'Todos los campos son requeridos' });
+    }
+
+    // Consulta SQL para insertar el estudiante
+    const query = 'INSERT INTO estudiante (nombre, carnet, correo) VALUES (?, ?, ?)';
+    pool.query(query, [nombre, carnet, correo], (err, result) => {
+        if (err) {
+            console.error('Error al registrar el estudiante:', err);
+            return res.status(500).json({ message: 'Error al registrar el estudiante', error: err.message });
+        }
+
+        res.status(201).json({
+            message: 'Estudiante registrado exitosamente',
+            studentId: result.insertId,  // Devuelve el ID del nuevo estudiante
+        });
+    });
+});
+
+// Ruta GET para obtener todos los estudiantes
+app.get('/students', async (req, res) => {
+  try {
+    // Realiza la consulta usando la versión basada en promesas de mysql2
+    const [rows] = await pool.query('SELECT * FROM estudiante');
+    res.status(200).json(rows); // Enviar los datos de los estudiantes como respuesta
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error al obtener los estudiantes', error: error.message });
+  }
+});
 
 // Iniciar el servidor
 app.listen(3000, () => {
