@@ -18,7 +18,8 @@ CREATE TABLE IF NOT EXISTS estudiante (
     id_estudiante INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(150) NOT NULL,
     carnet VARCHAR(50) NOT NULL,
-    correo VARCHAR(150) NOT NULL
+    correo VARCHAR(150) NOT NULL,
+    password VARCHAR(255) NOT NULL
 );
 
 -- ================================
@@ -72,3 +73,7 @@ CREATE TABLE IF NOT EXISTS curso_aprobado (
     FOREIGN KEY (id_estudiante) REFERENCES estudiante(id_estudiante),
     FOREIGN KEY (id_curso) REFERENCES curso(id_curso)
 );
+
+DESCRIBE estudiante;
+
+
